@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.models import *
 from app.db.database import init_db
-from app.api.v1.router_transport_type import router as router_transport
+from app.api.v1.router_transport_type import router as router_transport_v1
 
 main_app = FastAPI()
 app_v1 = FastAPI(title='Transport API v1',
@@ -22,4 +22,4 @@ def on_startup():
     init_db()
 
 
-app_v1.include_router(router_transport, prefix="/transport", tags=['transport'])
+app_v1.include_router(router_transport_v1, prefix="/transport", tags=['transport'])
