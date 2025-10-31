@@ -48,3 +48,12 @@ def router_update_transport_type(transport_id: int, data: Transport, session: Se
     :return: update_transport_type(id, session)
     '''
     update_transport_type(transport_id, data, session)
+
+@router.get('/show', description='Вывод информации о видах транспорта')
+def router_show_transport_type(session: Session = Depends(get_session)):
+    '''
+    Ручка для вывода вида транспорта
+    :param session:
+    :return: show_transport_type(session)
+    '''
+    return show_transport_type(session)

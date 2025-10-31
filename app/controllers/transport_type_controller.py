@@ -86,3 +86,19 @@ def update_transport_type(id, data, session) -> Transport:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
+
+
+def show_transport_type(session) -> List[Transport]:
+    '''
+    Вывод информации по видам транспорта
+    :param session:
+    :return: List[Transport]
+    '''
+    try:
+        sql = select(Transport)
+        result = session.exec(sql).all()
+        return result
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Внутренняя ошибка сервера: {str(e)}")
