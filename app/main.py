@@ -28,3 +28,4 @@ main_app.mount('/api/v1/', app_v1)
 
 
 app_v1.include_router(router_transport_v1, prefix="/transports", tags=['transports'])
+app_v1.include_router(router_transport_v1, prefix="/stops", tags=['stops'])
