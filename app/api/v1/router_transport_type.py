@@ -39,7 +39,7 @@ def router_delete_transport_type(transport_id: int, session: Session = Depends(g
     '''
     return delete_transport_type_id(transport_id, session)
 
-@router.put('/update', status_code=status.HTTP_200_OK, description='Изменение вида транспорта')
+@router.put('/update/{transport_id}', status_code=status.HTTP_200_OK, description='Изменение вида транспорта')
 def router_update_transport_type(transport_id: int, data: Transport, session: Session = Depends(get_session)):
     '''
     Ручка для изменения вида транспорта

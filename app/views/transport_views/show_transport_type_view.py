@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 url = os.getenv('BASE_URL')
 
-# Представление добавления вида транспорта
+# Представление вывода всех видов транспорта
 def show_transport_view():
     url_api = f'{url}/transports/show'
 

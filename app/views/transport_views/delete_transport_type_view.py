@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 url = os.getenv('BASE_URL')
 
-# Представление добавления вида транспорта
+# Представление удаления вида транспорта
 def delete_transport_view(transport_id):
     url_api = f'{url}/transports/delete/{transport_id}'
 
