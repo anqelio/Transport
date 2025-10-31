@@ -6,16 +6,17 @@ load_dotenv()
 url = os.getenv('BASE_URL')
 
 # Представление добавления вида транспорта
-def show_transport_view(name):
-    url_api = f'{url}/transport/add'
-    transport = {
-        'name_transport': name
-        }
-    # POST-запрос
-    response = requests.post(url_api, json=transport)
+def show_transport_view():
+    url_api = f'{url}/transports/show'
+
+    # GET-запрос
+    response = requests.get(url_api)
     if response.status_code == 200 or response.status_code == 201:
         # Десериализация JSON-данных
         json_data = response.json()
-        print(json_data)
+        for i in json_data:
+            print(i)
     else:
         print(f'Ошибка запроса, статус: {response.status_code}')
+
+show_transport_view()

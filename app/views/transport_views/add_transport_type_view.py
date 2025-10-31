@@ -7,7 +7,7 @@ url = os.getenv('BASE_URL')
 
 # Представление добавления вида транспорта
 def add_transport_view(transport_id, name):
-    url_api = f'{url}/transport/add'
+    url_api = f'{url}/transports/add'
     transport = {
         'transport_id': transport_id,
         'name_transport': name

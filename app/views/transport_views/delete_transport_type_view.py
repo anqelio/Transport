@@ -7,7 +7,7 @@ url = os.getenv('BASE_URL')
 
 # Представление добавления вида транспорта
 def delete_transport_view(transport_id):
-    url_api = f'{url}/transport/delete/{transport_id}'
+    url_api = f'{url}/transports/delete/{transport_id}'
 
     # DELETE-запрос
     response = requests.delete(url_api)

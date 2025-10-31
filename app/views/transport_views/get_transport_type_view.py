@@ -7,7 +7,7 @@ url = os.getenv('BASE_URL')
 
 # Представление вывода вида транспорта по ID
 def get_transport_view(transport_id):
-    url_api = f'{url}/transport/get/{transport_id}'
+    url_api = f'{url}/transports/get/{transport_id}'
 
     # GET-запрос
     response = requests.get(url_api)
