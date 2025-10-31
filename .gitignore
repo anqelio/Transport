@@ -28,4 +28,4 @@ dist/
 uv.lock
 
 # Файл миграций БД
-alembic
+alembic/
