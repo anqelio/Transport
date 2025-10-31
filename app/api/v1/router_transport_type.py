@@ -7,7 +7,7 @@ from app.models.transport_types import Transport
 router = APIRouter()
 
 
-@router.get('/get', description='Поиск вида транспорта по ID')
+@router.get('/get/{transport_id}', description='Поиск вида транспорта по ID')
 def router_get_transport_type_by_id(transport_id: int, session: Session = Depends(get_session)):
     '''
     Ручка для поиска вида транспорта по ID

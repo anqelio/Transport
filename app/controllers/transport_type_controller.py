@@ -43,7 +43,7 @@ def add_transport_type(data, session) -> Optional[Transport]:
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить цвет, ошибка: {str(e)}")
+                            detail=f"Не удалось добавить вид транспорта, ошибка: {str(e)}")
 
 
 def delete_transport_type_id(id: int, session: Session = Depends(get_session)) -> str:
