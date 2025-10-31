@@ -29,7 +29,7 @@ def router_add_transport_type(data: Transport, session: Session = Depends(get_se
     return add_transport_type(data, session)
 
 
-@router.delete('/delete', status_code=status.HTTP_200_OK, description='Удаление вида транспорта')
+@router.delete('/delete/{transport_id}', status_code=status.HTTP_200_OK, description='Удаление вида транспорта')
 def router_delete_transport_type(transport_id: int, session: Session = Depends(get_session)):
     '''
     Ручка для удаления вида транспорта
