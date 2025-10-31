@@ -21,3 +21,9 @@ def get_engine():
     :return: engine
     '''
     return engine
+
+def close_db():
+    '''
+    Освобождение ресурсов
+    '''
+    engine.dispose()
