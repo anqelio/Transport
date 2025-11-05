@@ -7,7 +7,7 @@ from app.models.carriers import Carrier
 router = APIRouter()
 
 
-@router.get('/get/{carrier_id}', description='Поиск перевозчика по ID')
+@router.get('/carrier/{carrier_id}', description='Поиск перевозчика по ID')
 def router_get_carrier_by_id(carrier_id: int, session: Session = Depends(get_session)):
     '''
     Ручка для поиска перевозчика по ID
@@ -18,7 +18,7 @@ def router_get_carrier_by_id(carrier_id: int, session: Session = Depends(get_ses
     return get_carrier_by_id(carrier_id, session)
 
 
-@router.post('/add', status_code=status.HTTP_201_CREATED, description='Добавление перевозчика')
+@router.post('/carrier', status_code=status.HTTP_201_CREATED, description='Добавление перевозчика')
 def router_add_carrier(data: Carrier, session: Session = Depends(get_session)):
     '''
     Ручка для создания перевозчика
@@ -29,7 +29,7 @@ def router_add_carrier(data: Carrier, session: Session = Depends(get_session)):
     return add_carrier(data, session)
 
 
-@router.delete('/delete/{carrier_id}', status_code=status.HTTP_200_OK, description='Удаление перевозчика')
+@router.delete('/carrier/{carrier_id}', status_code=status.HTTP_200_OK, description='Удаление перевозчика')
 def router_delete_carrier(carrier_id: int, session: Session = Depends(get_session)):
     '''
     Ручка для удаления перевозчика
@@ -40,7 +40,7 @@ def router_delete_carrier(carrier_id: int, session: Session = Depends(get_sessio
     return delete_carrier_by_id(carrier_id, session)
 
 
-@router.put('/update/{carrier_id}', status_code=status.HTTP_200_OK, description='Изменение перевозчика')
+@router.put('/carrier/{carrier_id}', status_code=status.HTTP_200_OK, description='Изменение перевозчика')
 def router_update_carrier(carrier_id: int, data: Carrier, session: Session = Depends(get_session)):
     '''
     Ручка для изменения перевозчика
@@ -51,7 +51,7 @@ def router_update_carrier(carrier_id: int, data: Carrier, session: Session = Dep
     return update_carrier(carrier_id, data, session)
 
 
-@router.get('/show', description='Вывод информации о перевозчиках')
+@router.get('/carrier', description='Вывод информации о перевозчиках')
 def router_show_carrier(session: Session = Depends(get_session)):
     '''
     Ручка для вывода перевозчиков

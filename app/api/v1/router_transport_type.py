@@ -7,7 +7,7 @@ from app.models.transport_types import Transport
 router = APIRouter()
 
 
-@router.get('/get/{transport_id}', description='Поиск вида транспорта по ID')
+@router.get('/transport_type/{transport_id}', description='Поиск вида транспорта по ID')
 def router_get_transport_type_by_id(transport_id: int, session: Session = Depends(get_session)):
     '''
     Ручка для поиска вида транспорта по ID
@@ -18,7 +18,7 @@ def router_get_transport_type_by_id(transport_id: int, session: Session = Depend
     return get_transport_type_by_id(transport_id, session)
 
 
-@router.post('/add', status_code=status.HTTP_201_CREATED, description='Добавление вида транспорта')
+@router.post('/transport_type', status_code=status.HTTP_201_CREATED, description='Добавление вида транспорта')
 def router_add_transport_type(data: Transport, session: Session = Depends(get_session)):
     '''
     Ручка для создания вида транпорта
@@ -29,7 +29,7 @@ def router_add_transport_type(data: Transport, session: Session = Depends(get_se
     return add_transport_type(data, session)
 
 
-@router.delete('/delete/{transport_id}', status_code=status.HTTP_200_OK, description='Удаление вида транспорта')
+@router.delete('/transport_type/{transport_id}', status_code=status.HTTP_200_OK, description='Удаление вида транспорта')
 def router_delete_transport_type(transport_id: int, session: Session = Depends(get_session)):
     '''
     Ручка для удаления вида транспорта
@@ -39,7 +39,7 @@ def router_delete_transport_type(transport_id: int, session: Session = Depends(g
     '''
     return delete_transport_type_id(transport_id, session)
 
-@router.put('/update/{transport_id}', status_code=status.HTTP_200_OK, description='Изменение вида транспорта')
+@router.put('/transport_type/{transport_id}', status_code=status.HTTP_200_OK, description='Изменение вида транспорта')
 def router_update_transport_type(transport_id: int, data: Transport, session: Session = Depends(get_session)):
     '''
     Ручка для изменения вида транспорта
@@ -49,7 +49,7 @@ def router_update_transport_type(transport_id: int, data: Transport, session: Se
     '''
     update_transport_type(transport_id, data, session)
 
-@router.get('/show', description='Вывод информации о видах транспорта')
+@router.get('/transport_type', description='Вывод информации о видах транспорта')
 def router_show_transport_type(session: Session = Depends(get_session)):
     '''
     Ручка для вывода вида транспорта
