@@ -46,7 +46,7 @@ def add_employee(data, session) -> Optional[Employee]:
                             detail=f"Не удалось добавить сотрудника, ошибка: {str(e)}")
 
 
-def delete_employee_by_id(id: int, session: Session = Depends(get_session)) -> str:
+def delete_employee_by_id(id, session) -> str:
     '''
     Удаление сотрудника
     :param id:

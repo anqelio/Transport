@@ -8,6 +8,7 @@ from app.api.v1.router_stops import router as router_stops_v1
 from app.api.v1.router_routes import router as router_route_v1
 from app.api.v1.router_carriers import router as router_carrier_v1
 from app.api.v1.router_schedule import router as router_schedule_v1
+from app.api.v1.router_employee import router as router_employee_v1
 
 main_app = FastAPI()
 @asynccontextmanager
@@ -36,3 +37,4 @@ app_v1.include_router(router_stops_v1, tags=['stop'])
 app_v1.include_router(router_route_v1, tags=['route'])
 app_v1.include_router(router_carrier_v1, tags=['carrier'])
 app_v1.include_router(router_schedule_v1, tags=['schedule'])
+app_v1.include_router(router_employee_v1, tags=['employee'])
