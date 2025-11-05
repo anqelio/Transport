@@ -1,0 +1,104 @@
+from typing import List, Optional
+from fastapi import Depends, HTTPException, status
+from sqlmodel import Session, select
+from sqlalchemy.exc import IntegrityError
+from app.db.session import get_session
+from app.models.route_stops import RouteStop
+
+
+def get_route_stop_by_id(id, session) -> RouteStop:
+    '''
+    Поиск остановки на маршруте по ID
+    :param id:
+    :param session:
+    :return: RouteStop
+    '''
+    try:
+        result = session.get(RouteStop, id)
+        if not result:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+        return result
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Внутренняя ошибка сервера: {str(e)}")
+
+
+def add_route_stop(data, session) -> Optional[RouteStop]:
+    '''
+    Добавление остановки на маршруте
+    :param data:
+    :param session:
+    :return: data
+    '''
+    try:
+        session.add(data)
+        session.commit()
+        session.refresh(data)
+        return data
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Ошибка: дубликат или нарушение целостности данных")
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Не удалось добавить остановку на маршруте, ошибка: {str(e)}")
+
+
+def delete_route_stop_by_id(id, session) -> str:
+    '''
+    Удаление остановки на маршруте
+    :param id:
+    :param session:
+    :return: str
+    '''
+    try:
+        result = session.get(RouteStop, id)
+        if not result:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+        session.delete(result)
+        session.commit()
+        return "Удаление выполнено"
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Внутренняя ошибка сервера: {str(e)}")
+
+
+def update_route_stop(id, data, session) -> RouteStop:
+    '''
+    Изменение остановки на маршруте
+    :param data:
+    :param session:
+    :return: RouteStop
+    '''
+    try:
+        result = session.get(RouteStop, id)
+        if not result:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+        for key, value in data.dict(exclude_unset=True).items():
+            setattr(result, key, value)
+        session.commit()
+        session.refresh(result)
+        return result
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Внутренняя ошибка сервера: {str(e)}")
+
+
+def show_route_stop(session) -> List[RouteStop]:
+    '''
+    Вывод остановки на маршруте
+    :param session:
+    :return: List[RouteStop]
+    '''
+    try:
+        sql = select(RouteStop)
+        result = session.exec(sql).all()
+        return result
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Внутренняя ошибка сервера: {str(e)}")
