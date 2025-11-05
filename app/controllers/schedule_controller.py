@@ -3,18 +3,18 @@ from fastapi import Depends, HTTPException, status
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
-from app.models.routes import Routes
+from app.models.schedules import Schedule
 
 
-def get_route_by_id(id, session) -> Routes:
+def get_schedule_by_id(id, session) -> Schedule:
     '''
-    Поиск маршрута по ID
+    Поиск расписания по ID
     :param id:
     :param session:
-    :return: Routes
+    :return: Schedule
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.get(Schedule, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         return result
@@ -24,9 +24,9 @@ def get_route_by_id(id, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_route(data, session) -> Optional[Routes]:
+def add_schedule(data, session) -> Optional[Schedule]:
     '''
-    Добавление маршрута
+    Добавление расписания
     :param data:
     :param session:
     :return: data
@@ -43,18 +43,18 @@ def add_route(data, session) -> Optional[Routes]:
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить остановку, ошибка: {str(e)}")
+                            detail=f"Не удалось добавить расписание, ошибка: {str(e)}")
 
 
-def delete_route_by_id(id: int, session: Session = Depends(get_session)) -> str:
+def delete_schedule_by_id(id: int, session: Session = Depends(get_session)) -> str:
     '''
-    Удаление маршрута
+    Удаление расписания
     :param id:
     :param session:
     :return: str
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.get(Schedule, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         session.delete(result)
@@ -66,15 +66,15 @@ def delete_route_by_id(id: int, session: Session = Depends(get_session)) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_route(id, data, session) -> Routes:
+def update_schedule(id, data, session) -> Schedule:
     '''
-    Изменение маршрута
+    Изменение расписания
     :param data:
     :param session:
-    :return: Routes
+    :return: Schedule
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.get(Schedule, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         for key, value in data.dict(exclude_unset=True).items():
@@ -88,14 +88,14 @@ def update_route(id, data, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_routes(session) -> List[Routes]:
+def show_schedules(session) -> List[Schedule]:
     '''
-    Вывод информации по маршрутам
+    Вывод расписания
     :param session:
-    :return: List[Routes]
+    :return: List[Schedule]
     '''
     try:
-        sql = select(Routes)
+        sql = select(Schedule)
         result = session.exec(sql).all()
         return result
     except Exception as e:

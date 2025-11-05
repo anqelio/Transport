@@ -49,7 +49,7 @@ def add_stop(data, session) -> Optional[Stop]:
 def delete_stop_by_id(id: int, session: Session = Depends(get_session)) -> str:
     '''
     Удаление остановки
-    :param data:
+    :param id:
     :param session:
     :return: str
     '''

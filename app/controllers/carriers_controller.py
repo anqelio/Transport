@@ -49,7 +49,7 @@ def add_carrier(data, session) -> Optional[Carrier]:
 def delete_carrier_by_id(id: int, session: Session = Depends(get_session)) -> str:
     '''
     Удаление перевозчика
-    :param data:
+    :param id:
     :param session:
     :return: str
     '''

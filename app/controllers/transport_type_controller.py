@@ -49,7 +49,7 @@ def add_transport_type(data, session) -> Optional[Transport]:
 def delete_transport_type_id(id: int, session: Session = Depends(get_session)) -> str:
     '''
     Удаление вида транспорта
-    :param data:
+    :param id:
     :param session:
     :return: str
     '''
