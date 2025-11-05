@@ -3,18 +3,18 @@ from fastapi import Depends, HTTPException, status
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
-from app.models.trips import Trip
+from app.models.schedule_changes import ScheduleChanges
 
 
-def get_trip_by_id(id, session) -> Trip:
+def get_schedule_changes_by_id(id, session) -> ScheduleChanges:
     '''
-    Поиск поездок по ID
+    Поиск изменений расписания по ID
     :param id:
     :param session:
-    :return: Trip
+    :return: ScheduleChanges
     '''
     try:
-        result = session.get(Trip, id)
+        result = session.get(ScheduleChanges, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         return result
@@ -24,9 +24,9 @@ def get_trip_by_id(id, session) -> Trip:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_trip(data, session) -> Optional[Trip]:
+def add_schedule_changes(data, session) -> Optional[ScheduleChanges]:
     '''
-    Добавление поездки
+    Добавление изменения расписания
     :param data:
     :param session:
     :return: data
@@ -43,18 +43,18 @@ def add_trip(data, session) -> Optional[Trip]:
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить поездку, ошибка: {str(e)}")
+                            detail=f"Не удалось добавить изменение расписания, ошибка: {str(e)}")
 
 
-def delete_trip(id, session) -> str:
+def delete_schedule_changes_by_id(id, session) -> str:
     '''
-    Удаление поездки
+    Удаление изменения расписания
     :param id:
     :param session:
     :return: str
     '''
     try:
-        result = session.get(Trip, id)
+        result = session.get(ScheduleChanges, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         session.delete(result)
@@ -66,15 +66,15 @@ def delete_trip(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_trip(id, data, session) -> Trip:
+def update_schedule_changes(id, data, session) -> ScheduleChanges:
     '''
-    Изменение поездки
+    Изменение изменения расписания
     :param data:
     :param session:
-    :return: Trip
+    :return: ScheduleChanges
     '''
     try:
-        result = session.get(Trip, id)
+        result = session.get(ScheduleChanges, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         for key, value in data.dict(exclude_unset=True).items():
@@ -88,14 +88,14 @@ def update_trip(id, data, session) -> Trip:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_trip(session) -> List[Trip]:
+def show_schedule_changes(session) -> List[ScheduleChanges]:
     '''
-    Вывод информации по поездке
+    Вывод изменений расписания
     :param session:
-    :return: List[Trip]
+    :return: List[ScheduleChanges]
     '''
     try:
-        sql = select(Trip)
+        sql = select(ScheduleChanges)
         result = session.exec(sql).all()
         return result
     except Exception as e:

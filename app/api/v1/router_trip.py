@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get('/trip/{trip_id}', description='Поиск поездки по ID')
 def router_get_trip_by_id(trip_id: int, session: Session = Depends(get_session)):
-    return get_trip_type_by_id(trip_id, session)
+    return get_trip_by_id(trip_id, session)
 
 
 @router.post('/trip', status_code=status.HTTP_201_CREATED, description='Добавление поездки')

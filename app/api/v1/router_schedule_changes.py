@@ -1,0 +1,32 @@
+from fastapi import Depends, status, APIRouter
+from sqlmodel import Session
+from app.controllers.schedule_changes_controller import *
+from app.db.session import get_session
+from app.models.schedule_changes import ScheduleChanges
+
+router = APIRouter()
+
+
+@router.get('/schedule_change/{schedule_change_id}', description='Поиск изменений расписания по ID')
+def router_get_schedule_change_by_id(schedule_change_id: int, session: Session = Depends(get_session)):
+    return get_schedule_changes_by_id(schedule_change_id, session)
+
+
+@router.post('/schedule_change', status_code=status.HTTP_201_CREATED, description='Добавление изменений расписания')
+def router_add_schedule_change(data: ScheduleChanges, session: Session = Depends(get_session)):
+    return add_schedule_changes(data, session)
+
+
+@router.delete('/schedule_change/{schedule_change_id}', status_code=status.HTTP_200_OK, description='Удаление изменений расписания')
+def router_delete_schedule_change(schedule_change_id: int, session: Session = Depends(get_session)):
+    return delete_schedule_changes_by_id(schedule_change_id, session)
+
+
+@router.put('/schedule_change/{schedule_change_id}', status_code=status.HTTP_200_OK, description='Изменение изменений расписания')
+def router_update_schedule_change(schedule_change_id: int, data: ScheduleChanges, session: Session = Depends(get_session)):
+    return update_schedule_changes(schedule_change_id, data, session)
+
+
+@router.get('/schedule_change', description='Вывод изменений расписания')
+def router_show_schedule_change(session: Session = Depends(get_session)):
+    return show_schedule_changes(session)
