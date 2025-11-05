@@ -46,7 +46,7 @@ def add_transport_type(data, session) -> Optional[Transport]:
                             detail=f"Не удалось добавить вид транспорта, ошибка: {str(e)}")
 
 
-def delete_transport_type_id(id: int, session: Session = Depends(get_session)) -> str:
+def delete_transport_type_id(id, session) -> str:
     '''
     Удаление вида транспорта
     :param id:

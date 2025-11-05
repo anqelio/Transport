@@ -46,7 +46,7 @@ def add_stop(data, session) -> Optional[Stop]:
                             detail=f"Не удалось добавить остановку, ошибка: {str(e)}")
 
 
-def delete_stop_by_id(id: int, session: Session = Depends(get_session)) -> str:
+def delete_stop_by_id(id, session) -> str:
     '''
     Удаление остановки
     :param id:

@@ -46,7 +46,7 @@ def add_schedule(data, session) -> Optional[Schedule]:
                             detail=f"Не удалось добавить расписание, ошибка: {str(e)}")
 
 
-def delete_schedule_by_id(id: int, session: Session = Depends(get_session)) -> str:
+def delete_schedule_by_id(id, session) -> str:
     '''
     Удаление расписания
     :param id:

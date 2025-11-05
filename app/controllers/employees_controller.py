@@ -3,18 +3,18 @@ from fastapi import Depends, HTTPException, status
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
-from app.models.routes import Routes
+from app.models.employees import Employee
 
 
-def get_route_by_id(id, session) -> Routes:
+def get_employee_by_id(id, session) -> Employee:
     '''
-    Поиск маршрута по ID
+    Поиск сотрудника по ID
     :param id:
     :param session:
-    :return: Routes
+    :return: Employee
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.get(Employee, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         return result
@@ -24,9 +24,9 @@ def get_route_by_id(id, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_route(data, session) -> Optional[Routes]:
+def add_employee(data, session) -> Optional[Employee]:
     '''
-    Добавление маршрута
+    Добавление сотрудника
     :param data:
     :param session:
     :return: data
@@ -43,18 +43,18 @@ def add_route(data, session) -> Optional[Routes]:
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить остановку, ошибка: {str(e)}")
+                            detail=f"Не удалось добавить сотрудника, ошибка: {str(e)}")
 
 
-def delete_route_by_id(id, session) -> str:
+def delete_employee_by_id(id: int, session: Session = Depends(get_session)) -> str:
     '''
-    Удаление маршрута
+    Удаление сотрудника
     :param id:
     :param session:
     :return: str
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.get(Employee, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         session.delete(result)
@@ -66,15 +66,15 @@ def delete_route_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_route(id, data, session) -> Routes:
+def update_employee(id, data, session) -> Employee:
     '''
-    Изменение маршрута
+    Изменение сотрудника
     :param data:
     :param session:
-    :return: Routes
+    :return: Employee
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.get(Employee, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         for key, value in data.dict(exclude_unset=True).items():
@@ -88,14 +88,14 @@ def update_route(id, data, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_routes(session) -> List[Routes]:
+def show_employee(session) -> List[Employee]:
     '''
-    Вывод информации по маршрутам
+    Вывод информации по сотрудникам
     :param session:
-    :return: List[Routes]
+    :return: List[Employee]
     '''
     try:
-        sql = select(Routes)
+        sql = select(Employee)
         result = session.exec(sql).all()
         return result
     except Exception as e:
