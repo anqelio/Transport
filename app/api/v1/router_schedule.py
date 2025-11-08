@@ -1,4 +1,5 @@
 from fastapi import Depends, status, APIRouter
+from fastapi_pagination import Page
 from sqlmodel import Session
 from app.controllers.schedule_controller import *
 from app.db.session import get_session
@@ -17,7 +18,7 @@ def router_add_schedule(data: Schedule, session: Session = Depends(get_session))
     return add_schedule(data, session)
 
 
-@router.delete('/schedule/{schedule_id}', status_code=status.HTTP_200_OK, description='Удаление расписания')
+@router.delete('/schedule/{schedule_id}', status_code=status.HTTP_204_NO_CONTENT, description='Удаление расписания')
 def router_delete_schedule(schedule_id: int, session: Session = Depends(get_session)):
     return delete_schedule_by_id(schedule_id, session)
 
@@ -27,6 +28,6 @@ def router_update_schedule(schedule_id: int, data: Schedule, session: Session = 
     update_schedule(schedule_id, data, session)
 
 
-@router.get('/schedule', description='Вывод расписания')
-def router_show_schedule(session: Session = Depends(get_session)):
-    return show_schedules(session)
+@router.get('/schedule', description='Вывод расписания', response_model=Page[Schedule])
+def router_show_schedule(session: Session = Depends(get_session), page: int = 1, size: int = 10):
+    return show_schedules(session, page, size)

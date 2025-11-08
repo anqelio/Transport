@@ -1,5 +1,7 @@
 from typing import List, Optional
 from fastapi import Depends, HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
@@ -88,16 +90,17 @@ def update_schedule_changes(id, data, session) -> ScheduleChanges:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_schedule_changes(session) -> List[ScheduleChanges]:
+def show_schedule_changes(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[ScheduleChanges]:
     '''
     Вывод изменений расписания
     :param session:
-    :return: List[ScheduleChanges]
+    :param page
+    :param size
+    :return: Page[ScheduleChanges]
     '''
     try:
         sql = select(ScheduleChanges)
-        result = session.exec(sql).all()
-        return result
+        return paginate(session, sql)
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

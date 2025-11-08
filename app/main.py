@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
+
 from app.models import *
 from app.db.database import *
 from app.api.v1.router_transport_type import router as router_transport_v1
@@ -12,6 +14,7 @@ from app.api.v1.router_employee import router as router_employee_v1
 from app.api.v1.router_route_stops import router as router_route_stop_v1
 from app.api.v1.router_trip import router as router_trip_v1
 from app.api.v1.router_schedule_changes import router as router_schedule_changes_v1
+from app.api.v1.router_employee_schedules import router as router_employee_schedule_v1
 
 main_app = FastAPI()
 @asynccontextmanager
@@ -44,3 +47,5 @@ app_v1.include_router(router_employee_v1, tags=['employee'])
 app_v1.include_router(router_route_stop_v1, tags=['route_stop'])
 app_v1.include_router(router_trip_v1, tags=['trip'])
 app_v1.include_router(router_schedule_changes_v1, tags=['schedule_changes'])
+app_v1.include_router(router_employee_schedule_v1, tags=['employee_schedule'])
+add_pagination(app_v1)

@@ -1,4 +1,5 @@
 from fastapi import Depends, status, APIRouter
+from fastapi_pagination import Page
 from sqlmodel import Session
 from app.controllers.employees_controller import *
 from app.db.session import get_session
@@ -17,7 +18,7 @@ def router_add_employee(data: Employee, session: Session = Depends(get_session))
     return add_employee(data, session)
 
 
-@router.delete('/employee/{employee_id}', status_code=status.HTTP_200_OK, description='Удаление сотрудника')
+@router.delete('/employee/{employee_id}', status_code=status.HTTP_204_NO_CONTENT, description='Удаление сотрудника')
 def router_delete_employee(employee_id: int, session: Session = Depends(get_session)):
     return delete_employee_by_id(employee_id, session)
 
@@ -27,6 +28,6 @@ def router_update_employee(employee_id: int, data: Employee, session: Session = 
     return update_employee(employee_id, data, session)
 
 
-@router.get('/employee', description='Вывод информации о сотрудниках')
-def router_show_employee(session: Session = Depends(get_session)):
-    return show_employee(session)
+@router.get('/employee', description='Вывод информации о сотрудниках', response_model=Page[Employee])
+def router_show_employee(session: Session = Depends(get_session), page: int = 1, size: int = 10):
+    return show_employee(session, page, size)

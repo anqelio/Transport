@@ -1,4 +1,5 @@
 from fastapi import Depends, status, APIRouter
+from fastapi_pagination import Page
 from sqlmodel import Session
 from app.controllers.stops_controller import *
 from app.db.session import get_session
@@ -17,7 +18,7 @@ def router_add_stop(data: Stop, session: Session = Depends(get_session)):
     return add_stop(data, session)
 
 
-@router.delete('/stop/{stop_id}', status_code=status.HTTP_200_OK, description='Удаление остановки')
+@router.delete('/stop/{stop_id}', status_code=status.HTTP_204_NO_CONTENT, description='Удаление остановки')
 def router_delete_stop(stop_id: int, session: Session = Depends(get_session)):
     return delete_stop_by_id(stop_id, session)
 
@@ -27,6 +28,6 @@ def router_update_stop(stop_id: int, data: Stop, session: Session = Depends(get_
     return update_stop(stop_id, data, session)
 
 
-@router.get('/stop', description='Вывод информации о остановках')
-def router_show_stop(session: Session = Depends(get_session)):
-    return show_stops(session)
+@router.get('/stop', description='Вывод информации о остановках', response_model=Page[Stop])
+def router_show_stop(session: Session = Depends(get_session), page: int = 1, size: int = 10):
+    return show_stops(session, page, size)

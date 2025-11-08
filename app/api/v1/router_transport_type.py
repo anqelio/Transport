@@ -1,4 +1,5 @@
 from fastapi import Depends, status, APIRouter
+from fastapi_pagination import Page
 from sqlmodel import Session
 from app.controllers.transport_type_controller import *
 from app.db.session import get_session
@@ -17,7 +18,7 @@ def router_add_transport_type(data: Transport, session: Session = Depends(get_se
     return add_transport_type(data, session)
 
 
-@router.delete('/transport_type/{transport_id}', status_code=status.HTTP_200_OK, description='Удаление вида транспорта')
+@router.delete('/transport_type/{transport_id}', status_code=status.HTTP_204_NO_CONTENT, description='Удаление вида транспорта')
 def router_delete_transport_type(transport_id: int, session: Session = Depends(get_session)):
     return delete_transport_type_id(transport_id, session)
 
@@ -25,6 +26,6 @@ def router_delete_transport_type(transport_id: int, session: Session = Depends(g
 def router_update_transport_type(transport_id: int, data: Transport, session: Session = Depends(get_session)):
     return update_transport_type(transport_id, data, session)
 
-@router.get('/transport_type', description='Вывод информации о видах транспорта')
-def router_show_transport_type(session: Session = Depends(get_session)):
-    return show_transport_type(session)
+@router.get('/transport_type', description='Вывод информации о видах транспорта', response_model=Page[Transport])
+def router_show_transport_type(session: Session = Depends(get_session), page: int = 1, size: int = 10):
+    return show_transport_type(session, page, size)

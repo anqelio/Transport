@@ -8,3 +8,4 @@ pydantic==2.12.3
 asyncpg==0.30.0
 python-jose==3.5.0
 requests==2.32.5
+fastapi-pagination==0.15.0

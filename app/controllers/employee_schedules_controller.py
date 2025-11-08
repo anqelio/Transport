@@ -5,18 +5,18 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
-from app.models.schedules import Schedule
+from app.models.employee_schedules import EmployeeSchedules
 
 
-def get_schedule_by_id(id, session) -> Schedule:
+def get_employee_schedule_by_id(id, session) -> EmployeeSchedules:
     '''
-    Поиск расписания по ID
+    Поиск расписания рабочих по ID
     :param id:
     :param session:
-    :return: Schedule
+    :return: EmployeeSchedules
     '''
     try:
-        result = session.get(Schedule, id)
+        result = session.get(EmployeeSchedules, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         return result
@@ -26,9 +26,9 @@ def get_schedule_by_id(id, session) -> Schedule:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_schedule(data, session) -> Optional[Schedule]:
+def add_employee_schedule(data, session) -> Optional[EmployeeSchedules]:
     '''
-    Добавление расписания
+    Добавление расписания рабочих
     :param data:
     :param session:
     :return: data
@@ -45,18 +45,18 @@ def add_schedule(data, session) -> Optional[Schedule]:
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить расписание, ошибка: {str(e)}")
+                            detail=f"Не удалось добавить расписание рабочих, ошибка: {str(e)}")
 
 
-def delete_schedule_by_id(id, session) -> str:
+def delete_employee_schedule_by_id(id, session) -> str:
     '''
-    Удаление расписания
+    Удаление расписания рабочих
     :param id:
     :param session:
     :return: str
     '''
     try:
-        result = session.get(Schedule, id)
+        result = session.get(EmployeeSchedules, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         session.delete(result)
@@ -68,15 +68,15 @@ def delete_schedule_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_schedule(id, data, session) -> Schedule:
+def update_employee_schedule(id, data, session) -> EmployeeSchedules:
     '''
-    Изменение расписания
+    Изменение расписания рабочих
     :param data:
     :param session:
-    :return: Schedule
+    :return: EmployeeSchedules
     '''
     try:
-        result = session.get(Schedule, id)
+        result = session.get(EmployeeSchedules, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         for key, value in data.dict(exclude_unset=True).items():
@@ -90,16 +90,16 @@ def update_schedule(id, data, session) -> Schedule:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_schedules(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Schedule]:
+def show_employee_schedule(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[EmployeeSchedules]:
     '''
-    Вывод расписания
+    Вывод расписания рабочих
     :param session:
     :param page
     :param size
-    :return: Page[Schedule]
+    :return: Page[EmployeeSchedules]
     '''
     try:
-        sql = select(Schedule)
+        sql = select(EmployeeSchedules)
         return paginate(session, sql)
     except Exception as e:
         session.rollback()

@@ -1,5 +1,7 @@
-from typing import List, Optional
+from typing import Optional
 from fastapi import Depends, HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
@@ -88,16 +90,17 @@ def update_employee(id, data, session) -> Employee:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_employee(session) -> List[Employee]:
+def show_employee(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Employee]:
     '''
     Вывод информации по сотрудникам
     :param session:
-    :return: List[Employee]
+    :param page
+    :param size
+    :return: Page[Employee]
     '''
     try:
         sql = select(Employee)
-        result = session.exec(sql).all()
-        return result
+        return paginate(session, sql)
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

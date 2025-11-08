@@ -1,5 +1,7 @@
 from typing import List, Optional
 from fastapi import Depends, HTTPException, status
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
@@ -88,16 +90,17 @@ def update_route(id, data, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_routes(session) -> List[Routes]:
+def show_routes(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Routes]:
     '''
     Вывод информации по маршрутам
     :param session:
-    :return: List[Routes]
+    :param page
+    :param size
+    :return: Page[Routes]
     '''
     try:
         sql = select(Routes)
-        result = session.exec(sql).all()
-        return result
+        return paginate(session, sql)
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
