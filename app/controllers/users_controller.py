@@ -5,18 +5,18 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
-from app.models.trips import Trip
+from app.models.users import User
 
 
-def get_trip_by_id(id, session) -> Trip:
+def get_user_by_id(id, session) -> User:
     '''
-    Поиск поездок по ID
+    Поиск пользователя по ID
     :param id:
     :param session:
     :return: Trip
     '''
     try:
-        result = session.get(Trip, id)
+        result = session.get(User, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         return result
@@ -26,9 +26,9 @@ def get_trip_by_id(id, session) -> Trip:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_trip(data, session) -> Optional[Trip]:
+def add_user(data, session) -> Optional[User]:
     '''
-    Добавление поездки
+    Добавление пользователя
     :param data:
     :param session:
     :return: data
@@ -48,15 +48,15 @@ def add_trip(data, session) -> Optional[Trip]:
                             detail=f"Не удалось добавить поездку, ошибка: {str(e)}")
 
 
-def delete_trip(id, session) -> str:
+def delete_user(id, session) -> str:
     '''
-    Удаление поездки
+    Удаление пользователя
     :param id:
     :param session:
     :return: str
     '''
     try:
-        result = session.get(Trip, id)
+        result = session.get(User, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         session.delete(result)
@@ -68,15 +68,15 @@ def delete_trip(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_trip(id, data, session) -> Trip:
+def update_user(id, data, session) -> User:
     '''
-    Изменение поездки
+    Изменение пользователя
     :param data:
     :param session:
-    :return: Trip
+    :return: User
     '''
     try:
-        result = session.get(Trip, id)
+        result = session.get(User, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         for key, value in data.dict(exclude_unset=True).items():
@@ -90,16 +90,16 @@ def update_trip(id, data, session) -> Trip:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_trip(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Trip]:
+def show_users(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[User]:
     '''
-    Вывод информации по поездке
+    Вывод информации о пользователях
     :param session:
     :param page
     :param size
-    :return: Page[Trip]
+    :return: List[User]
     '''
     try:
-        sql = select(Trip)
+        sql = select(User)
         return paginate(session, sql)
     except Exception as e:
         session.rollback()

@@ -1,8 +1,6 @@
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
-
 from app.models import *
 from app.db.database import *
 from app.api.v1.router_transport_type import router as router_transport_v1
@@ -15,8 +13,11 @@ from app.api.v1.router_route_stops import router as router_route_stop_v1
 from app.api.v1.router_trip import router as router_trip_v1
 from app.api.v1.router_schedule_changes import router as router_schedule_changes_v1
 from app.api.v1.router_employee_schedules import router as router_employee_schedule_v1
+from app.api.v1.router_users_controller import router as router_user_v1
 
 main_app = FastAPI()
+
+
 @asynccontextmanager
 async def on_startup(app: FastAPI):
     '''
@@ -28,6 +29,7 @@ async def on_startup(app: FastAPI):
     yield
     close_db()
 
+
 app_v1 = FastAPI(title='Transport API v1',
                  version='1.0.0',
                  openapi_url='/openapi.json',
@@ -37,15 +39,15 @@ app_v1 = FastAPI(title='Transport API v1',
 
 main_app.mount('/api/v1/', app_v1)
 
-
-app_v1.include_router(router_transport_v1, tags=['transport'])
-app_v1.include_router(router_stops_v1, tags=['stop'])
-app_v1.include_router(router_route_v1, tags=['route'])
-app_v1.include_router(router_carrier_v1, tags=['carrier'])
-app_v1.include_router(router_schedule_v1, tags=['schedule'])
-app_v1.include_router(router_employee_v1, tags=['employee'])
-app_v1.include_router(router_route_stop_v1, tags=['route_stop'])
-app_v1.include_router(router_trip_v1, tags=['trip'])
-app_v1.include_router(router_schedule_changes_v1, tags=['schedule_changes'])
-app_v1.include_router(router_employee_schedule_v1, tags=['employee_schedule'])
+app_v1.include_router(router_transport_v1, tags=['Transport'])
+app_v1.include_router(router_stops_v1, tags=['Stop'])
+app_v1.include_router(router_route_v1, tags=['Routes'])
+app_v1.include_router(router_carrier_v1, tags=['Carrier'])
+app_v1.include_router(router_schedule_v1, tags=['Schedule'])
+app_v1.include_router(router_employee_v1, tags=['Employee'])
+app_v1.include_router(router_route_stop_v1, tags=['RouteStop'])
+app_v1.include_router(router_trip_v1, tags=['Trip'])
+app_v1.include_router(router_schedule_changes_v1, tags=['ScheduleChanges'])
+app_v1.include_router(router_employee_schedule_v1, tags=['EmployeeSchedules'])
+app_v1.include_router(router_user_v1, tags=['User'])
 add_pagination(app_v1)
