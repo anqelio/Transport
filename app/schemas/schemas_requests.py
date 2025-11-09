@@ -1,8 +1,11 @@
 import re
 from datetime import date
+from typing import Optional, List
 
 from pydantic import BaseModel, field_validator
 from sqlmodel import Field
+
+from app.models.users import User
 
 MAX_STRING_LENGTH = 255
 MAX_TEXT_LENGTH = 500
@@ -12,6 +15,23 @@ TIME_REGEX = re.compile(r'^([0-1][0-9]|2[0-3]):[0-5][0-9]$')
 class UserCreate(BaseModel):
     login: str = Field(..., min_length=3, max_length=MAX_STRING_LENGTH)
     password: str = Field(..., min_length=6, max_length=MAX_STRING_LENGTH)
+    role: Optional[str] = "user"
+    carrier_id: Optional[int] = None
+    group_id: Optional[int] = None
+
+
+class UserLogin(BaseModel):
+    login: str
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
 
 
 class TripCreate(BaseModel):
@@ -107,3 +127,9 @@ class EmployeeSchedulesCreate(BaseModel):
 class CarrierCreate(BaseModel):
     name_company: str = Field(..., max_length=MAX_STRING_LENGTH)
     contact_info: str = Field(..., max_length=MAX_TEXT_LENGTH)
+
+
+class GroupCreate(BaseModel):
+    name: str = Field(..., max_length=MAX_STRING_LENGTH)
+    description: Optional[str] = Field(..., max_length=MAX_TEXT_LENGTH)
+    users: List[User]

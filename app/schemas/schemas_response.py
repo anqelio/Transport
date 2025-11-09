@@ -1,11 +1,25 @@
 from datetime import date
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 
 class User(BaseModel):
     user_id: int
     login: str
     password: str
+    role: str
+    carrier_id: int
+    group_id: int
+
+class UserLogin(BaseModel):
+    login: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
 
 class Trip(BaseModel):
     trip_id: int
@@ -77,3 +91,8 @@ class Carrier(BaseModel):
     carrier_id: int
     name_company: str
     contact_info: str
+
+class GroupCreate(BaseModel):
+    name: str
+    description: str
+    users: str

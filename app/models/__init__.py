@@ -8,5 +8,7 @@ from app.models.employee_schedules import EmployeeSchedules
 from app.models.employees import Employee
 from app.models.transport_types import Transport
 from app.models.trips import Trip
+from app.models.groups import UserGroup
+from app.models.users import User
 
-__all__ = ["Routes", "Schedule", "RouteStop", "Stop", "ScheduleChanges", "Carrier", "EmployeeSchedules", "Employee", "Transport", "Trip"]
+__all__ = ["Routes", "Schedule", "RouteStop", "Stop", "ScheduleChanges", "Carrier", "EmployeeSchedules", "Employee", "Transport", "Trip", "UserGroup", "User"]

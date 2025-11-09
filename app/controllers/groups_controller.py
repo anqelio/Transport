@@ -5,20 +5,18 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
-from app.models import UserGroup
-from app.models.users import User
-from app.security.auth_utils import get_password_hash
+from app.models.groups import UserGroup
 
 
-def get_user_by_id(id, session) -> User:
+def get_group_by_id(id, session) -> UserGroup:
     '''
-    Поиск пользователя по ID
+    Поиск остановки на маршруте по ID
     :param id:
     :param session:
-    :return: Trip
+    :return: UserGroup
     '''
     try:
-        result = session.get(User, id)
+        result = session.get(UserGroup, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         return result
@@ -28,25 +26,18 @@ def get_user_by_id(id, session) -> User:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_user(data, session) -> Optional[User]:
+def add_group(data, session) -> Optional[UserGroup]:
     '''
-    Добавление пользователя
+    Добавление остановки на маршруте
     :param data:
     :param session:
     :return: data
     '''
     try:
-        if data.group_id:
-            group = session.get(UserGroup, data.group_id)
-            if not group:
-                raise HTTPException(status_code=400, detail="Группа не найдена")
-        obj = User(
-            login=data.login,
-            password=data.password,
-            hashed_password=get_password_hash(data.password),
-            role=data.role,
-            carrier_id=data.carrier_id,
-            group_id=data.group_id
+        obj = UserGroup(
+            route_id=data.route_id,
+            stop_id=data.stop_id,
+            minutes_to_next_stop=data.minutes_to_next_stop
         )
         session.add(obj)
         session.commit()
@@ -60,15 +51,15 @@ def add_user(data, session) -> Optional[User]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_user(id, session, current_user) -> str:
+def delete_group_by_id(id, session) -> str:
     '''
-    Удаление пользователя
+    Удаление остановки на маршруте
     :param id:
     :param session:
     :return: str
     '''
     try:
-        result = session.get(User, id)
+        result = session.get(UserGroup, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         session.delete(result)
@@ -80,15 +71,15 @@ def delete_user(id, session, current_user) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_user(id, data, session, current_user) -> User:
+def update_group(id, data, session) -> UserGroup:
     '''
-    Изменение пользователя
+    Изменение остановки на маршруте
     :param data:
     :param session:
-    :return: User
+    :return: UserGroup
     '''
     try:
-        result = session.get(User, id)
+        result = session.get(UserGroup, id)
         if not result:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
         for key, value in data.dict(exclude_unset=True).items():
@@ -102,16 +93,16 @@ def update_user(id, data, session, current_user) -> User:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_users(session: Session, page: int = 1, size: int = 10, current_user: User = None) -> Page[User]:
+def show_group(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[UserGroup]:
     '''
-    Вывод информации о пользователях
+    Вывод остановки на маршруте
     :param session:
     :param page
     :param size
-    :return: List[User]
+    :return: Page[UserGroup]
     '''
     try:
-        sql = select(User)
+        sql = select(UserGroup)
         return paginate(session, sql)
     except Exception as e:
         session.rollback()
