@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.users_controller import *
 from app.db.session import get_session
 from app.models.users import User
+from app.schemas.schemas_requests import UserCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_user_by_id(user_id: int, session: Session = Depends(get_session))
 
 
 @router.post('/user', status_code=status.HTTP_201_CREATED, description='Добавление пользователя')
-def router_add_user(data: User, session: Session = Depends(get_session)):
+def router_add_user(data: UserCreate, session: Session = Depends(get_session)):
     return add_user(data, session)
 
 

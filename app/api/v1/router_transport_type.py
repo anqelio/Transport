@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.transport_type_controller import *
 from app.db.session import get_session
 from app.models.transport_types import Transport
+from app.schemas.schemas_requests import TransportCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_transport_type_by_id(transport_id: int, session: Session = Depend
 
 
 @router.post('/transport_type', status_code=status.HTTP_201_CREATED, description='Добавление вида транспорта')
-def router_add_transport_type(data: Transport, session: Session = Depends(get_session)):
+def router_add_transport_type(data: TransportCreate, session: Session = Depends(get_session)):
     return add_transport_type(data, session)
 
 

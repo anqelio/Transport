@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.employees_controller import *
 from app.db.session import get_session
 from app.models.employees import Employee
+from app.schemas.schemas_requests import EmployeeCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_employee_by_id(employee_id: int, session: Session = Depends(get_s
 
 
 @router.post('/employee', status_code=status.HTTP_201_CREATED, description='Добавление сотрудника')
-def router_add_employee(data: Employee, session: Session = Depends(get_session)):
+def router_add_employee(data: EmployeeCreate, session: Session = Depends(get_session)):
     return add_employee(data, session)
 
 

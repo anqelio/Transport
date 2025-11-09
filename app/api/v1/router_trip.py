@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.trip_controller import *
 from app.db.session import get_session
 from app.models.trips import Trip
+from app.schemas.schemas_requests import TripCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_trip_by_id(trip_id: int, session: Session = Depends(get_session))
 
 
 @router.post('/trip', status_code=status.HTTP_201_CREATED, description='Добавление поездки')
-def router_add_trip(data: Trip, session: Session = Depends(get_session)):
+def router_add_trip(data: TripCreate, session: Session = Depends(get_session)):
     return add_trip(data, session)
 
 

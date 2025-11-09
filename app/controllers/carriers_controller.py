@@ -34,18 +34,20 @@ def add_carrier(data, session) -> Optional[Carrier]:
     :return: data
     '''
     try:
-        session.add(data)
+        obj = Carrier(
+            name_company=data.name_company,
+            contact_info=data.contact_info
+        )
+        session.add(obj)
         session.commit()
-        session.refresh(data)
-        return data
+        session.refresh(obj)
+        return obj
     except IntegrityError:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Ошибка: дубликат или нарушение целостности данных")
+        raise HTTPException(status_code=400, detail="Ошибка: нарушение целостности данных")
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить остановку, ошибка: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
 def delete_carrier_by_id(id, session) -> str:

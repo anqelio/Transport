@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.carriers_controller import *
 from app.db.session import get_session
 from app.models.carriers import Carrier
+from app.schemas.schemas_requests import CarrierCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_carrier_by_id(carrier_id: int, session: Session = Depends(get_ses
 
 
 @router.post('/carrier', status_code=status.HTTP_201_CREATED, description='Добавление перевозчика')
-def router_add_carrier(data: Carrier, session: Session = Depends(get_session)):
+def router_add_carrier(data: CarrierCreate, session: Session = Depends(get_session)):
     return add_carrier(data, session)
 
 

@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.employee_schedules_controller import *
 from app.db.session import get_session
 from app.models.employee_schedules import EmployeeSchedules
+from app.schemas.schemas_requests import EmployeeSchedulesCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_employee_by_id(employee_schedule_id: int, session: Session = Depe
 
 
 @router.post('/employee_schedule', status_code=status.HTTP_201_CREATED, description='Добавление графика рабочих')
-def router_add_employee(data: EmployeeSchedules, session: Session = Depends(get_session)):
+def router_add_employee(data: EmployeeSchedulesCreate, session: Session = Depends(get_session)):
     return add_employee_schedule(data, session)
 
 

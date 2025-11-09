@@ -34,18 +34,23 @@ def add_schedule_changes(data, session) -> Optional[ScheduleChanges]:
     :return: data
     '''
     try:
-        session.add(data)
+        obj = ScheduleChanges(
+            trip_id=data.trip_id,
+            reason=data.reason,
+            date_trip=data.date_trip,
+            old_time_trip=data.old_time_trip,
+            time_new_trip=data.time_new_trip
+        )
+        session.add(obj)
         session.commit()
-        session.refresh(data)
-        return data
+        session.refresh(obj)
+        return obj
     except IntegrityError:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Ошибка: дубликат или нарушение целостности данных")
+        raise HTTPException(status_code=400, detail="Ошибка: нарушение целостности данных")
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить изменение расписания, ошибка: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
 def delete_schedule_changes_by_id(id, session) -> str:

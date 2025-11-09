@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.stops_controller import *
 from app.db.session import get_session
 from app.models.stops import Stop
+from app.schemas.schemas_requests import StopCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_stop_by_id(stop_id: int, session: Session = Depends(get_session))
 
 
 @router.post('/stop', status_code=status.HTTP_201_CREATED, description='Добавление остановки')
-def router_add_stop(data: Stop, session: Session = Depends(get_session)):
+def router_add_stop(data: StopCreate, session: Session = Depends(get_session)):
     return add_stop(data, session)
 
 

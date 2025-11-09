@@ -34,18 +34,20 @@ def add_user(data, session) -> Optional[User]:
     :return: data
     '''
     try:
-        session.add(data)
+        obj = User(
+            login=data.login,
+            password=data.password
+        )
+        session.add(obj)
         session.commit()
-        session.refresh(data)
-        return data
+        session.refresh(obj)
+        return obj
     except IntegrityError:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Ошибка: дубликат или нарушение целостности данных")
+        raise HTTPException(status_code=400, detail="Ошибка: нарушение целостности данных")
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить поездку, ошибка: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
 def delete_user(id, session) -> str:

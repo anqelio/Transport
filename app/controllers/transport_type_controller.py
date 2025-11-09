@@ -34,18 +34,19 @@ def add_transport_type(data, session) -> Optional[Transport]:
     :return: data
     '''
     try:
-        session.add(data)
+        obj = Transport(
+            name_transport=data.name_transport
+        )
+        session.add(obj)
         session.commit()
-        session.refresh(data)
-        return data
+        session.refresh(obj)
+        return obj
     except IntegrityError:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Ошибка: дубликат или нарушение целостности данных")
+        raise HTTPException(status_code=400, detail="Ошибка: нарушение целостности данных")
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить вид транспорта, ошибка: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
 def delete_transport_type_id(id, session) -> str:

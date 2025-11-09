@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.route_stops_controller import *
 from app.db.session import get_session
 from app.models.route_stops import RouteStop
+from app.schemas.schemas_requests import RouteStopCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_employee_by_id(route_stop_id: int, session: Session = Depends(get
 
 
 @router.post('/route_stop', status_code=status.HTTP_201_CREATED, description='Добавление остановки на маршруте')
-def router_add_employee(data: RouteStop, session: Session = Depends(get_session)):
+def router_add_employee(data: RouteStopCreate, session: Session = Depends(get_session)):
     return add_route_stop(data, session)
 
 

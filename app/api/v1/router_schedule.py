@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.schedule_controller import *
 from app.db.session import get_session
 from app.models.schedules import Schedule
+from app.schemas.schemas_requests import ScheduleCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_schedule_by_id(schedule_id: int, session: Session = Depends(get_s
 
 
 @router.post('/schedule', status_code=status.HTTP_201_CREATED, description='Добавление расписания')
-def router_add_schedule(data: Schedule, session: Session = Depends(get_session)):
+def router_add_schedule(data: ScheduleCreate, session: Session = Depends(get_session)):
     return add_schedule(data, session)
 
 

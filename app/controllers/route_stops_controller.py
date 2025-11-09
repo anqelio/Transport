@@ -34,18 +34,21 @@ def add_route_stop(data, session) -> Optional[RouteStop]:
     :return: data
     '''
     try:
-        session.add(data)
+        obj = RouteStop(
+            route_id=data.route_id,
+            stop_id=data.stop_id,
+            minutes_to_next_stop=data.minutes_to_next_stop
+        )
+        session.add(obj)
         session.commit()
-        session.refresh(data)
-        return data
+        session.refresh(obj)
+        return obj
     except IntegrityError:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Ошибка: дубликат или нарушение целостности данных")
+        raise HTTPException(status_code=400, detail="Ошибка: нарушение целостности данных")
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить остановку на маршруте, ошибка: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
 def delete_route_stop_by_id(id, session) -> str:

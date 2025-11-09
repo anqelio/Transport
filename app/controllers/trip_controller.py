@@ -34,18 +34,25 @@ def add_trip(data, session) -> Optional[Trip]:
     :return: data
     '''
     try:
-        session.add(data)
+        obj = Trip(
+            schedule_id=data.schedule_id,
+            planned_departure_time=data.planned_departure_time,
+            actual_departure_time=data.actual_departure_time,
+            trip_date=data.trip_date,
+            vehicle_info=data.vehicle_info,
+            driver_id=data.driver_id,
+            conductor_id=data.conductor_id
+        )
+        session.add(obj)
         session.commit()
-        session.refresh(data)
-        return data
+        session.refresh(obj)
+        return obj
     except IntegrityError:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Ошибка: дубликат или нарушение целостности данных")
+        raise HTTPException(status_code=400, detail="Ошибка: нарушение целостности данных")
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Не удалось добавить поездку, ошибка: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
 def delete_trip(id, session) -> str:

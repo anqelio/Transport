@@ -4,6 +4,7 @@ from sqlmodel import Session
 from app.controllers.routes_controller import *
 from app.db.session import get_session
 from app.models.routes import Routes
+from app.schemas.schemas_requests import RoutesCreate
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ def router_get_route_by_id(route_id: int, session: Session = Depends(get_session
 
 
 @router.post('/route', status_code=status.HTTP_201_CREATED, description='Добавление маршрута')
-def router_add_route(data: Routes, session: Session = Depends(get_session)):
+def router_add_route(data: RoutesCreate, session: Session = Depends(get_session)):
     return add_route(data, session)
 
 
