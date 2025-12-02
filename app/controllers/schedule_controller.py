@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.schedules import Schedule
 
 
-def get_schedule_by_id(id, session) -> Schedule:
+def get_schedule_by_id(id, session, current_user) -> Schedule:
     '''
     Поиск расписания по ID
     :param id:
@@ -26,7 +27,7 @@ def get_schedule_by_id(id, session) -> Schedule:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_schedule(data, session) -> Optional[Schedule]:
+def add_schedule(data, session, current_user) -> Optional[Schedule]:
     '''
     Добавление расписания
     :param data:
@@ -51,7 +52,7 @@ def add_schedule(data, session) -> Optional[Schedule]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_schedule_by_id(id, session) -> str:
+def delete_schedule_by_id(id, session, current_user) -> str:
     '''
     Удаление расписания
     :param id:
@@ -71,7 +72,7 @@ def delete_schedule_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_schedule(id, data, session) -> Schedule:
+def update_schedule(id, data, session, current_user) -> Schedule:
     '''
     Изменение расписания
     :param data:
@@ -93,7 +94,7 @@ def update_schedule(id, data, session) -> Schedule:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_schedules(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Schedule]:
+def show_schedules(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[Schedule]:
     '''
     Вывод расписания
     :param session:

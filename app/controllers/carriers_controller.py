@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.carriers import Carrier
 
 
-def get_carrier_by_id(id, session) -> Carrier:
+def get_carrier_by_id(id, session, current_user) -> Carrier:
     '''
     Поиск перевозчика по ID
     :param id:
@@ -26,7 +27,7 @@ def get_carrier_by_id(id, session) -> Carrier:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_carrier(data, session) -> Optional[Carrier]:
+def add_carrier(data, session, current_user) -> Optional[Carrier]:
     '''
     Добавление перевозчика
     :param data:
@@ -50,7 +51,7 @@ def add_carrier(data, session) -> Optional[Carrier]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_carrier_by_id(id, session) -> str:
+def delete_carrier_by_id(id, session, current_user) -> str:
     '''
     Удаление перевозчика
     :param id:
@@ -70,7 +71,7 @@ def delete_carrier_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_carrier(id, data, session) -> Carrier:
+def update_carrier(id, data, session, current_user) -> Carrier:
     '''
     Изменение перевозчика
     :param data:
@@ -92,7 +93,7 @@ def update_carrier(id, data, session) -> Carrier:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_carrier(session: Session = Depends(get_session), page: int = 1, size: int = 1) -> Page[Carrier]:
+def show_carrier(session: Session = Depends(get_session), page: int = 1, size: int = 1, current_user: User = None) -> Page[Carrier]:
     '''
     Вывод информации по перевозчикам
     :param session:

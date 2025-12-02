@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.groups import UserGroup
 
 
-def get_group_by_id(id, session) -> UserGroup:
+def get_group_by_id(id, session, current_user) -> UserGroup:
     '''
     Поиск остановки на маршруте по ID
     :param id:
@@ -26,7 +27,7 @@ def get_group_by_id(id, session) -> UserGroup:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_group(data, session) -> Optional[UserGroup]:
+def add_group(data, session, current_user) -> Optional[UserGroup]:
     '''
     Добавление остановки на маршруте
     :param data:
@@ -51,7 +52,7 @@ def add_group(data, session) -> Optional[UserGroup]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_group_by_id(id, session) -> str:
+def delete_group_by_id(id, session, current_user) -> str:
     '''
     Удаление остановки на маршруте
     :param id:
@@ -71,7 +72,7 @@ def delete_group_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_group(id, data, session) -> UserGroup:
+def update_group(id, data, session, current_user) -> UserGroup:
     '''
     Изменение остановки на маршруте
     :param data:
@@ -93,7 +94,7 @@ def update_group(id, data, session) -> UserGroup:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_group(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[UserGroup]:
+def show_group(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[UserGroup]:
     '''
     Вывод остановки на маршруте
     :param session:

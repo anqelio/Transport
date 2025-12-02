@@ -20,23 +20,20 @@ async def get_current_user(
 ) -> User:
     try:
         token = credentials.credentials
-
-        # Remove redundant load_dotenv() calls
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
 
         if username is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(status_code=401, detail="Некорректный токен")
 
     except JWTError as e:
-        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+        raise HTTPException(status_code=401, detail=f"Некорректный токен: {str(e)}")
 
-    # Find user by login
     sql = select(User).where(User.login == username)
     user = session.exec(sql).first()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
 
     return user
 
@@ -46,7 +43,7 @@ def require_roles(allowed_roles: list):
         if current_user.role not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Insufficient permissions"
+                detail="Недостаточно прав"
             )
         return current_user
 

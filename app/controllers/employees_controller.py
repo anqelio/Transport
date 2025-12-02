@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.employees import Employee
 
 
-def get_employee_by_id(id, session) -> Employee:
+def get_employee_by_id(id, session, current_user) -> Employee:
     '''
     Поиск сотрудника по ID
     :param id:
@@ -26,7 +27,7 @@ def get_employee_by_id(id, session) -> Employee:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_employee(data, session) -> Optional[Employee]:
+def add_employee(data, session, current_user) -> Optional[Employee]:
     '''
     Добавление сотрудника
     :param data:
@@ -52,7 +53,7 @@ def add_employee(data, session) -> Optional[Employee]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_employee_by_id(id, session) -> str:
+def delete_employee_by_id(id, session, current_user) -> str:
     '''
     Удаление сотрудника
     :param id:
@@ -72,7 +73,7 @@ def delete_employee_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_employee(id, data, session) -> Employee:
+def update_employee(id, data, session, current_user) -> Employee:
     '''
     Изменение сотрудника
     :param data:
@@ -94,7 +95,7 @@ def update_employee(id, data, session) -> Employee:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_employee(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Employee]:
+def show_employee(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[Employee]:
     '''
     Вывод информации по сотрудникам
     :param session:

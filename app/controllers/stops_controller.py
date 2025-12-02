@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.stops import Stop
 
 
-def get_stop_by_id(id, session) -> Stop:
+def get_stop_by_id(id, session, current_user) -> Stop:
     '''
     Поиск остановки по ID
     :param id:
@@ -26,7 +27,7 @@ def get_stop_by_id(id, session) -> Stop:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_stop(data, session) -> Optional[Stop]:
+def add_stop(data, session, current_user) -> Optional[Stop]:
     '''
     Добавление остановки
     :param data:
@@ -52,7 +53,7 @@ def add_stop(data, session) -> Optional[Stop]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_stop_by_id(id, session) -> str:
+def delete_stop_by_id(id, session, current_user) -> str:
     '''
     Удаление остановки
     :param id:
@@ -72,7 +73,7 @@ def delete_stop_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_stop(id, data, session) -> Stop:
+def update_stop(id, data, session, current_user) -> Stop:
     '''
     Изменение остановки
     :param data:
@@ -94,7 +95,7 @@ def update_stop(id, data, session) -> Stop:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_stops(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Stop]:
+def show_stops(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[Stop]:
     '''
     Вывод информации по остановкам
     :param session:

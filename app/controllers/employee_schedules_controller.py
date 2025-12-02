@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.employee_schedules import EmployeeSchedules
 
 
-def get_employee_schedule_by_id(id, session) -> EmployeeSchedules:
+def get_employee_schedule_by_id(id, session, current_user) -> EmployeeSchedules:
     '''
     Поиск расписания рабочих по ID
     :param id:
@@ -26,7 +27,7 @@ def get_employee_schedule_by_id(id, session) -> EmployeeSchedules:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_employee_schedule(data, session) -> Optional[EmployeeSchedules]:
+def add_employee_schedule(data, session, current_user) -> Optional[EmployeeSchedules]:
     '''
     Добавление расписания рабочих
     :param data:
@@ -53,7 +54,7 @@ def add_employee_schedule(data, session) -> Optional[EmployeeSchedules]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_employee_schedule_by_id(id, session) -> str:
+def delete_employee_schedule_by_id(id, session, current_user) -> str:
     '''
     Удаление расписания рабочих
     :param id:
@@ -73,7 +74,7 @@ def delete_employee_schedule_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_employee_schedule(id, data, session) -> EmployeeSchedules:
+def update_employee_schedule(id, data, session, current_user) -> EmployeeSchedules:
     '''
     Изменение расписания рабочих
     :param data:
@@ -95,7 +96,7 @@ def update_employee_schedule(id, data, session) -> EmployeeSchedules:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_employee_schedule(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[EmployeeSchedules]:
+def show_employee_schedule(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[EmployeeSchedules]:
     '''
     Вывод расписания рабочих
     :param session:

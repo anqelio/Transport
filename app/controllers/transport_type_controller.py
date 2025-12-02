@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.transport_types import Transport
 
 
-def get_transport_type_by_id(id, session) -> Transport:
+def get_transport_type_by_id(id, session, current_user) -> Transport:
     '''
     Поиск вида транспорта по ID
     :param id:
@@ -26,7 +27,7 @@ def get_transport_type_by_id(id, session) -> Transport:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_transport_type(data, session) -> Optional[Transport]:
+def add_transport_type(data, session, current_user) -> Optional[Transport]:
     '''
     Добавление вида транспорта
     :param data:
@@ -49,7 +50,7 @@ def add_transport_type(data, session) -> Optional[Transport]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_transport_type_id(id, session) -> str:
+def delete_transport_type_id(id, session, current_user) -> str:
     '''
     Удаление вида транспорта
     :param id:
@@ -69,7 +70,7 @@ def delete_transport_type_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_transport_type(id, data, session) -> Transport:
+def update_transport_type(id, data, session, current_user) -> Transport:
     '''
     Изменение вида транспорта
     :param data:
@@ -91,7 +92,7 @@ def update_transport_type(id, data, session) -> Transport:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_transport_type(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Transport]:
+def show_transport_type(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[Transport]:
     '''
     Вывод информации по видам транспорта
     :param session:

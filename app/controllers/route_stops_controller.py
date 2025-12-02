@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.route_stops import RouteStop
 
 
-def get_route_stop_by_id(id, session) -> RouteStop:
+def get_route_stop_by_id(id, session, current_user) -> RouteStop:
     '''
     Поиск остановки на маршруте по ID
     :param id:
@@ -26,7 +27,7 @@ def get_route_stop_by_id(id, session) -> RouteStop:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_route_stop(data, session) -> Optional[RouteStop]:
+def add_route_stop(data, session, current_user) -> Optional[RouteStop]:
     '''
     Добавление остановки на маршруте
     :param data:
@@ -51,7 +52,7 @@ def add_route_stop(data, session) -> Optional[RouteStop]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_route_stop_by_id(id, session) -> str:
+def delete_route_stop_by_id(id, session, current_user) -> str:
     '''
     Удаление остановки на маршруте
     :param id:
@@ -71,7 +72,7 @@ def delete_route_stop_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_route_stop(id, data, session) -> RouteStop:
+def update_route_stop(id, data, session, current_user) -> RouteStop:
     '''
     Изменение остановки на маршруте
     :param data:
@@ -93,7 +94,7 @@ def update_route_stop(id, data, session) -> RouteStop:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_route_stop(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[RouteStop]:
+def show_route_stop(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[RouteStop]:
     '''
     Вывод остановки на маршруте
     :param session:

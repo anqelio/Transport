@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.routes import Routes
 
 
-def get_route_by_id(id, session) -> Routes:
+def get_route_by_id(id, session, current_user) -> Routes:
     '''
     Поиск маршрута по ID
     :param id:
@@ -26,7 +27,7 @@ def get_route_by_id(id, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_route(data, session) -> Optional[Routes]:
+def add_route(data, session, current_user) -> Optional[Routes]:
     '''
     Добавление маршрута
     :param data:
@@ -55,7 +56,7 @@ def add_route(data, session) -> Optional[Routes]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_route_by_id(id, session) -> str:
+def delete_route_by_id(id, session, current_user) -> str:
     '''
     Удаление маршрута
     :param id:
@@ -75,7 +76,7 @@ def delete_route_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_route(id, data, session) -> Routes:
+def update_route(id, data, session, current_user) -> Routes:
     '''
     Изменение маршрута
     :param data:
@@ -97,7 +98,7 @@ def update_route(id, data, session) -> Routes:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_routes(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Routes]:
+def show_routes(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[Routes]:
     '''
     Вывод информации по маршрутам
     :param session:

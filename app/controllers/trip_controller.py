@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.trips import Trip
 
 
-def get_trip_by_id(id, session) -> Trip:
+def get_trip_by_id(id, session, current_user) -> Trip:
     '''
     Поиск поездок по ID
     :param id:
@@ -26,7 +27,7 @@ def get_trip_by_id(id, session) -> Trip:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_trip(data, session) -> Optional[Trip]:
+def add_trip(data, session, current_user) -> Optional[Trip]:
     '''
     Добавление поездки
     :param data:
@@ -55,7 +56,7 @@ def add_trip(data, session) -> Optional[Trip]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_trip(id, session) -> str:
+def delete_trip(id, session, current_user) -> str:
     '''
     Удаление поездки
     :param id:
@@ -75,7 +76,7 @@ def delete_trip(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_trip(id, data, session) -> Trip:
+def update_trip(id, data, session, current_user) -> Trip:
     '''
     Изменение поездки
     :param data:
@@ -97,7 +98,7 @@ def update_trip(id, data, session) -> Trip:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_trip(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[Trip]:
+def show_trip(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[Trip]:
     '''
     Вывод информации по поездке
     :param session:

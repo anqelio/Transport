@@ -5,10 +5,11 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from app.db.session import get_session
+from app.models import User
 from app.models.schedule_changes import ScheduleChanges
 
 
-def get_schedule_changes_by_id(id, session) -> ScheduleChanges:
+def get_schedule_changes_by_id(id, session, current_user) -> ScheduleChanges:
     '''
     Поиск изменений расписания по ID
     :param id:
@@ -26,7 +27,7 @@ def get_schedule_changes_by_id(id, session) -> ScheduleChanges:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_schedule_changes(data, session) -> Optional[ScheduleChanges]:
+def add_schedule_changes(data, session, current_user) -> Optional[ScheduleChanges]:
     '''
     Добавление изменения расписания
     :param data:
@@ -53,7 +54,7 @@ def add_schedule_changes(data, session) -> Optional[ScheduleChanges]:
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def delete_schedule_changes_by_id(id, session) -> str:
+def delete_schedule_changes_by_id(id, session, current_user) -> str:
     '''
     Удаление изменения расписания
     :param id:
@@ -73,7 +74,7 @@ def delete_schedule_changes_by_id(id, session) -> str:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def update_schedule_changes(id, data, session) -> ScheduleChanges:
+def update_schedule_changes(id, data, session, current_user) -> ScheduleChanges:
     '''
     Изменение изменения расписания
     :param data:
@@ -95,7 +96,7 @@ def update_schedule_changes(id, data, session) -> ScheduleChanges:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def show_schedule_changes(session: Session = Depends(get_session), page: int = 1, size: int = 10) -> Page[ScheduleChanges]:
+def show_schedule_changes(session: Session = Depends(get_session), page: int = 1, size: int = 10, current_user: User = None) -> Page[ScheduleChanges]:
     '''
     Вывод изменений расписания
     :param session:
