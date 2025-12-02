@@ -10,7 +10,7 @@ from app.models.users import User
 from app.security.auth_utils import get_password_hash
 
 
-def get_user_by_id(id, session) -> User:
+def get_user_by_id(id, session, current_user) -> User:
     '''
     Поиск пользователя по ID
     :param id:
@@ -28,7 +28,7 @@ def get_user_by_id(id, session) -> User:
                             detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 
-def add_user(data, session) -> Optional[User]:
+def add_user(data, session, current_user) -> Optional[User]:
     '''
     Добавление пользователя
     :param data:

@@ -31,38 +31,6 @@ async def on_startup(app: FastAPI):
     yield
     close_db()
 
-def custom_openapi():
-    if app_v1.openapi_schema:
-        return app_v1.openapi_schema
-
-    openapi_schema = get_openapi(
-        title="Transport API v1",
-        version="1.0.0",
-        description="API для системы управления городским транспортом",
-        routes=app_v1.routes,
-    )
-
-    # Добавляем Bearer аутентификацию для Swagger
-    openapi_schema["components"]["securitySchemes"] = {
-        "BearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT",
-            "description": "Введите токен в формате: Bearer <ваш_токен>"
-        }
-    }
-
-    for path in openapi_schema["paths"]:
-        for method in openapi_schema["paths"][path]:
-            # Пропускаем эндпоинты аутентификации
-            if "auth" not in path:
-                if "security" not in openapi_schema["paths"][path][method]:
-                    openapi_schema["paths"][path][method]["security"] = []
-                openapi_schema["paths"][path][method]["security"].append({"BearerAuth": []})
-
-    app_v1.openapi_schema = openapi_schema
-    return app_v1.openapi_schema
-
 app_v1 = FastAPI(
     title='Transport API v1',
     version='1.0.0',
@@ -70,16 +38,23 @@ app_v1 = FastAPI(
     docs_url='/docs',
     redoc_url='/redoc',
     lifespan=on_startup,
+    description='Приложение, которое обеспечивает информирование пользователей о движении городского общественного транспорта.',
     swagger_ui_parameters={
-        "persistAuthorization": True,  # Сохраняет авторизацию при перезагрузке
+        "persistAuthorization": True,
         "displayRequestDuration": True
     }
 )
 
-# Кастомная OpenAPI схема
-app_v1.openapi = custom_openapi
+app_v2 = FastAPI(
+    title='Transport API v2', version="2.0.0",
+    openapi_url="/api/v2/openapi.json", docs_url="/api/v2/docs",
+    redoc_url="/api/v2/redoc",
+    description='Приложение, работающее без сети, которое обеспечивает информирование пользователей о движении городского общественного транспорта.',
+    swagger_ui_oauth2_redirect_url="/docs/oauth2-redirect",
+    lifespan=on_startup)
 
 main_app.mount('/api/v1/', app_v1)
+main_app.mount("/api/v2", app_v2)
 
 # Подключаем все роутеры
 app_v1.include_router(router_transport_v1, tags=['Transport'])
@@ -95,5 +70,19 @@ app_v1.include_router(router_employee_schedule_v1, tags=['EmployeeSchedules'])
 app_v1.include_router(router_user_v1, tags=['User'])
 app_v1.include_router(router_group_v1, tags=['Group'])
 app_v1.include_router(router_auth_v1, prefix="/auth", tags=['Auth'])
-
 add_pagination(app_v1)
+
+app_v2.include_router(router_transport_v1, tags=['Transport'])
+app_v2.include_router(router_stops_v1, tags=['Stop'])
+app_v2.include_router(router_route_v1, tags=['Routes'])
+app_v2.include_router(router_carrier_v1, tags=['Carrier'])
+app_v2.include_router(router_schedule_v1, tags=['Schedule'])
+app_v2.include_router(router_employee_v1, tags=['Employee'])
+app_v2.include_router(router_route_stop_v1, tags=['RouteStop'])
+app_v2.include_router(router_trip_v1, tags=['Trip'])
+app_v2.include_router(router_schedule_changes_v1, tags=['ScheduleChanges'])
+app_v2.include_router(router_employee_schedule_v1, tags=['EmployeeSchedules'])
+app_v2.include_router(router_user_v1, tags=['User'])
+app_v2.include_router(router_group_v1, tags=['Group'])
+app_v2.include_router(router_auth_v1, prefix="/auth", tags=['Auth'])
+add_pagination(app_v2)

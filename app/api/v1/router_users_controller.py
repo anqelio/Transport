@@ -13,9 +13,9 @@ router = APIRouter()
 def router_get_user_by_id(
     user_id: int,
     session: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)  # Добавлена аутентификация
+    current_user: User = Depends(get_current_user)
 ):
-    return get_user_by_id(user_id, session)
+    return get_user_by_id(user_id, session, current_user)
 
 @router.post('/user', status_code=status.HTTP_201_CREATED, description='Добавление пользователя')
 def router_add_user(
@@ -23,7 +23,7 @@ def router_add_user(
     session: Session = Depends(get_session),
     current_user: User = Depends(require_roles(["admin", "superadmin"]))
 ):
-    return add_user(data, session)
+    return add_user(data, session, current_user)
 
 @router.delete('/user/{user_id}', status_code=status.HTTP_204_NO_CONTENT, description='Удаление пользователя')
 def router_delete_user(
