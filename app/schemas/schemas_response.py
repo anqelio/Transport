@@ -21,6 +21,12 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    refresh_token: str
+    expires_in: int
+
 class Trip(BaseModel):
     trip_id: int
     schedule_id: int

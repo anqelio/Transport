@@ -20,6 +20,18 @@ uvicorn app.main:app_v1 --reload
 
 # Запуск приложения без сети
 uvicorn app.main:app_v2 --reload
+
+## Создать файл .env с вашими параметрами для подключения бд:
+DATABASE_URL
+= "postgresql+psycopg2://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME"
+SECRET_KEY="YOUR_SECRET_KEY"
+где
+DB_USER - пользователь,
+DB_PASSWORD- пароль,
+DB_HOST- сервер,
+DB_PORT-порт,
+DB_NAME- имя базы данных
+YOUR_SECRET_KEY – секретный ключ для получения токена
 ---
 
 Для каждого пользователя задается роль – обычный пользователь, оператор,
