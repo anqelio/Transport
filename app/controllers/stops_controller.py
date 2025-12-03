@@ -9,17 +9,19 @@ from app.models import User
 from app.models.stops import Stop
 
 
-def get_stop_by_id(id, session, current_user) -> Stop:
+def get_stop_by_title(title, session, current_user) -> Stop:
     '''
-    Поиск остановки по ID
-    :param id:
+    Поиск остановки по названию
+    :param title:
     :param session:
     :return: Stop
     '''
     try:
-        result = session.get(Stop, id)
+        result = session.query(Stop).filter(
+            Stop.name_stop == title
+        ).first()
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{title} не найден")
         return result
     except Exception as e:
         session.rollback()

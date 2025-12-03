@@ -9,17 +9,19 @@ from app.models import User
 from app.models.employees import Employee
 
 
-def get_employee_by_id(id, session, current_user) -> Employee:
+def get_employee_by_position(position, session, current_user) -> Employee:
     '''
-    Поиск сотрудника по ID
-    :param id:
+    Поиск сотрудника по позиции
+    :param position:
     :param session:
     :return: Employee
     '''
     try:
-        result = session.get(Employee, id)
+        result = session.query(Employee).filter(
+            Employee.position == position
+        ).all()
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{position} не найден")
         return result
     except Exception as e:
         session.rollback()

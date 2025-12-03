@@ -10,10 +10,10 @@ from app.security.auth_deps import require_roles
 router = APIRouter()
 
 
-@router.get('/transport_type/{transport_id}', description='Поиск вида транспорта по ID')
-def router_get_transport_type_by_id(transport_id: int, session: Session = Depends(get_session),
+@router.get('/transport_type/{type}', description='Поиск вида транспорта по типу')
+def router_get_transport_type(type: str, session: Session = Depends(get_session),
                                     current_user: User = Depends(require_roles(["user", "operator", "admin", "superadmin"]))):
-    return get_transport_type_by_id(transport_id, session, current_user)
+    return get_transport_type(type, session, current_user)
 
 
 @router.post('/transport_type', status_code=status.HTTP_201_CREATED, description='Добавление вида транспорта')

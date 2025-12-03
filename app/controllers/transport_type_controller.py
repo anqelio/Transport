@@ -9,17 +9,19 @@ from app.models import User
 from app.models.transport_types import Transport
 
 
-def get_transport_type_by_id(id, session, current_user) -> Transport:
+def get_transport_type(type, session, current_user) -> Transport:
     '''
-    Поиск вида транспорта по ID
-    :param id:
+    Поиск вида транспорта по типу
+    :param type:
     :param session:
     :return: Transport
     '''
     try:
-        result = session.get(Transport, id)
+        result = session.query(Transport).filter(
+            Transport.name_transport == type
+        ).first()
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{type} не найден")
         return result
     except Exception as e:
         session.rollback()

@@ -9,17 +9,19 @@ from app.models import User
 from app.models.routes import Routes
 
 
-def get_route_by_id(id, session, current_user) -> Routes:
+def get_route_by_number(number, session, current_user) -> Routes:
     '''
-    Поиск маршрута по ID
-    :param id:
+    Поиск маршрута по номеру
+    :param number:
     :param session:
     :return: Routes
     '''
     try:
-        result = session.get(Routes, id)
+        result = session.query(Routes).filter(
+            Routes.number_route == number
+        ).first()
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{number} маршрут не найден")
         return result
     except Exception as e:
         session.rollback()

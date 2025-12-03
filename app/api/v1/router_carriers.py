@@ -11,11 +11,11 @@ from app.security.auth_deps import require_roles
 router = APIRouter()
 
 
-@router.get('/carrier/{carrier_id}', description='Поиск перевозчика по ID')
-def router_get_carrier_by_id(carrier_id: int,
+@router.get('/carrier/{title}', description='Поиск перевозчика по названию')
+def router_get_carrier_by_title(title: str,
                              session: Session = Depends(get_session),
                              current_user: User = Depends(require_roles(["operator", "admin", "superadmin"]))):
-    return get_carrier_by_id(carrier_id, session, current_user)
+    return get_carrier_by_title(title, session, current_user)
 
 
 @router.post('/carrier', status_code=status.HTTP_201_CREATED, description='Добавление перевозчика')

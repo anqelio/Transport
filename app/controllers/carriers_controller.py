@@ -9,17 +9,19 @@ from app.models import User
 from app.models.carriers import Carrier
 
 
-def get_carrier_by_id(id, session, current_user) -> Carrier:
+def get_carrier_by_title(title, session, current_user) -> Carrier:
     '''
-    Поиск перевозчика по ID
-    :param id:
+    Поиск перевозчика по названию
+    :param title:
     :param session:
     :return: Carrier
     '''
     try:
-        result = session.get(Carrier, id)
+        result = session.query(Carrier).filter(
+            Carrier.name_company == title
+        ).first()
         if not result:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"ID не найден")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{title} не найден")
         return result
     except Exception as e:
         session.rollback()

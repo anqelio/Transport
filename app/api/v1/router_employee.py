@@ -10,10 +10,10 @@ from app.security.auth_deps import require_roles
 router = APIRouter()
 
 
-@router.get('/employee/{employee_id}', description='Поиск сотрудника по ID')
-def router_get_employee_by_id(employee_id: int, session: Session = Depends(get_session),
+@router.get('/employee/{position}', description='Поиск сотрудника по позиции')
+def router_get_employee_by_position(position: str, session: Session = Depends(get_session),
                               current_user: User = Depends(require_roles(["operator", "admin", "superadmin"]))):
-    return get_employee_by_id(employee_id, session, current_user)
+    return get_employee_by_position(position, session, current_user)
 
 
 @router.post('/employee', status_code=status.HTTP_201_CREATED, description='Добавление сотрудника')
